@@ -7,6 +7,15 @@ import { authOptions } from "../api/auth/[...nextAuth]";
 export async function getServerSideProps({ req, res, params }) {
   const session = await unstable_getServerSession(req, res, authOptions);
 
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
   const response = await apiFetch(`/articles/${params.id}`, {
     headers: {
       Authorization: session.user.accessToken,
